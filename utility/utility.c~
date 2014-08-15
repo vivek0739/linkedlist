@@ -5,7 +5,6 @@ struct node
 	int data;
 	struct node *next;
 };
-/********************************utility function********************************************************************************/
 void del_ll(struct node **head,int key)
 {
 	struct node *ptr=*head,*prev;;
@@ -79,7 +78,8 @@ void insert_end(struct node **head,int data)
 	newnode->next=ptr->next;
 	ptr->next=newnode;
 
-	
+	/*4b:5f:36:3b:7b:c0:e6:e4:81:7e:ad:f3:8b:ec:3f:91 vivek0739@gmail.com
+	Agent pid 12302*/
 }
 void print_ll(struct node *head)
 {
@@ -90,7 +90,6 @@ void print_ll(struct node *head)
 	}
 	printf("\n");
 }
-/***************************************Drier function***************************************************************************/
 int main()
 {
 	struct node *head=NULL;

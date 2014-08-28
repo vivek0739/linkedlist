@@ -11,8 +11,149 @@ bool iscompare(struct node*,struct node*);
 void reverse_ll(struct node**);
 struct node* merge(struct node* , struct node* );
 void frontbacksplit(struct node*,struct node**,struct node**);
-
+void movenode(struct node**,struct node **);
 /********************************testing*****************************************************************************************/
+
+struct node *reverse(struct node *head,int k)
+{
+	struct node *prev=NULL;
+	struct node *curr=head;
+	struct node *next;
+	int i;
+	while(curr!=NULL && i<k)
+	{
+		next=curr->next;
+		curr->next=prev;
+		prev=curr;
+		curr=next;
+		i++;
+	}
+	if(next != NULL)
+	head->next = reverse(next,k) ;
+
+return prev;}
+/********************************utility function********************************************************************************/
+void removeloop(struct node *loop_node,struct node *head)
+{
+	struct node *ptr = loop_node;
+	struct node *ptr2= loop_node;
+	int k=0;
+	while(ptr -> next != ptr2)
+	{
+		ptr=ptr->next;
+		k++;
+	}
+	ptr=head;
+	ptr2=head;
+	while(k--)
+	ptr2=ptr2->next;
+	while(ptr != ptr2)
+	{
+		ptr= ptr->next;
+		ptr2= ptr2->next;
+	}
+	ptr2= ptr2->next;
+	while(ptr2->next != ptr)
+	ptr2 = ptr2->next;
+	
+	ptr2->next =NULL;
+}
+bool detect_remove(struct node *head)
+{
+	struct node *slow=head;
+ 	struct node *fast=head;
+	while(fast && slow && fast->next)
+	{
+		fast=fast->next->next;
+		slow=slow->next;
+		if(slow == fast)
+		{
+			removeloop(slow,head);
+			return 1;
+		}
+	}
+	return 0;
+	
+}
+
+struct node *merge_sorted_ll(struct node *a,struct node *b)
+{
+	struct node *result =NULL;
+	struct node **tail = &result;
+	while(1)
+	{
+	
+	if(a == NULL)
+	{
+		*tail = b;
+		break;
+	}
+	else if(b == NULL)
+	{	
+		*tail = a;
+		break;
+	}
+	if(a->data <= b->data)
+	{
+		movenode(tail,&a);
+	}
+	else
+	{
+		movenode(tail,&b);
+	}
+	tail = &((*tail) -> next);
+   }
+	return result;
+}
+
+
+void altsplit(struct node *head,struct node **aref,struct node **bref)
+{
+	struct node *a=NULL;
+	struct node *b=NULL;
+	while(head != NULL)
+	{
+		movenode(&a,&head);
+		if(head != NULL)
+			movenode(&b,&head); 	
+	
+	}
+ *aref = a;
+ *bref = b;
+} 
+void movenode(struct node **dest,struct node **source)
+{
+	if((*source) == NULL)
+		return;
+	struct node *a=*source;
+	
+	*source=a->next;
+	a->next = *dest;
+	*dest = a;
+	
+	
+}
+
+void deletealt(struct node *head)
+{
+
+	if(head == NULL)
+		return;
+	struct node *prev = head;
+ 	struct node *node = head -> next;
+	while(prev != NULL && prev ->next != NULL)
+	{
+		prev -> next = node -> next;
+		free(node);
+		prev = prev ->next;
+		if(prev)
+			node = prev -> next;
+		
+		
+	}
+
+}
+
 //quick sort
 struct node *gettail(struct node *head)
 {
@@ -82,7 +223,7 @@ void quicksort(struct node **headref )
 	(*headref) = quicksortrecur(*headref , gettail(*headref));
 	return;
 }
-/********************************utility function********************************************************************************/
+
 void swap(int *a,int *b)
 {
 	int temp;
@@ -551,7 +692,14 @@ int main()
 	del_dup(head);
 	swap_ll(head);*/
 	quicksort(&head);
-		print_ll(head);
+	struct node *aref=NULL;
+	struct node *bref=NULL;
+	altsplit(head,&aref,&bref);
+	//deletealt(head);
+	struct node *head2=merge_sorted_ll(aref,bref);
+		print_ll(head2);
+	struct node *ptr=reverse(head2,2);
+		print_ll(ptr);
 
 return 0;
 }
